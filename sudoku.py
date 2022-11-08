@@ -3,7 +3,7 @@ import copy
 cur_map = []
 stack = []
 n = 9
-
+ 
 
 class Cell:
     def __init__(self, x, y, number):
@@ -21,15 +21,13 @@ class Cell:
         return "{}".format(self.number)
 
 
-def get_input():
+def get_input(inputMap):
     print("here")
     for i in range(n):
         cur_map.append([])
-    for i in range(n):
-        col = 0
-        for j in input().split(" "):
-            cur_map[i].append(Cell(i, col, j))
-            col = col + 1
+    for row in range(n):
+        for col in range(n):
+            cur_map[row].append(Cell(row, col, inputMap[row][col]))
 
 
 def set_cell_num_domain(cell):
@@ -88,7 +86,19 @@ def forward_checking(cell):
         return "failuer"
 
 
-get_input()
+map1 = [
+    ["*", "*", 1, "*", "*", 2, "*", "*", "*"],
+    ["*", "*", 5, "*", "*", 6, "*", 3, "*"],
+    [4, 6, "*", "*", "*", 5, "*", "*", "*"],
+    ["*", "*", "*", 1, "*", 4, "*", "*", "*"],
+    [6, "*", "*", 8, "*", "*", 1, 4, 3],
+    ["*", "*", "*", "*", 9, "*", 5, "*", 8],
+    [8, "*", "*", "*", 4, 9, "*", 5, "*"],
+    [1, "*", "*", 3, 2, "*", "*", "*", "*"],
+    ["*", "*", 9, "*", "*", "*", 3, "*", "*"]
+]
+
+get_input(map1)
 
 set_map_domain()
 
