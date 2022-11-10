@@ -40,7 +40,7 @@ def set_cell_num_domain(cell):
             try:
                 cur_map[i][y].num_mrv.remove(cell.number)
                 if len(cur_map[i][y].num_mrv) == 0 and cur_map[i][y].isComplete != True:
-                    return false
+                    return False
             except:
                 pass
         for j in range(n):
@@ -52,6 +52,32 @@ def set_cell_num_domain(cell):
                     return False
             except:
                 pass
+        recX = -1
+        recY = -1
+        if((x == 0) or (x == 1) or (x == 2)):
+            recX = 0
+        elif((x == 3) or (x == 4) or (x == 5)):
+            recX = 1
+        elif((x == 6) or (x == 7) or (x == 8)):
+            recX = 2
+        if((y == 0) or (y == 1) or (y == 2)):
+            recY = 0
+        elif((y == 3) or (y == 4) or (y == 5)):
+            recY = 1
+        elif((y == 6) or (y == 7) or (y == 8)):
+            recY = 2
+        posInSquareX = x % 3
+        posInSquareY = y % 3
+        for currX in range(3):
+            for currY in range(3):
+                if((currX == posInSquareX) and (currY == posInSquareY)):
+                    continue
+                try:
+                    cur_map[currX + (recX * 3)][currY + (recY * 3)].num_mrv.remove(cell.number)
+                    if len(cur_map[currX + (recX * 3)][currY + (recY * 3)].num_mrv) == 0 and cur_map[currX + (recX * 3)][currY + (recY * 3)].isComplete != True:
+                        return False
+                except:
+                    pass
     return True
 
 
