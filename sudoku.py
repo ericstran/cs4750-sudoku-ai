@@ -12,7 +12,7 @@ class Cell:
         self.x = x
         self.y = y
 
-        # check if "filled"
+        # check if filled
         self.isComplete = False
         if number != '*':
             self.isComplete = True
@@ -30,7 +30,7 @@ def get_input(inputMap):
     print("here")
     # make rows
     for _ in range(n): cur_map.append([])
-    # make cols/initialize cell values
+    # make cols/initialize cells
     for row in range(n):
         for col in range(n):
             cur_map[row].append(Cell(row, col, inputMap[row][col]))
@@ -98,18 +98,22 @@ def set_map_domain():
     return x
 
 
+# print mrv for each cell
 def print_mrv():
     for i in range(n):
         for j in range(n):
             print(cur_map[i][j].num_mrv, end=",,,")
         print()
 
-
+# choose cell with mrv
 def choose_cell():
+    # create fake cell for comparison
     min_mrv_cell = Cell(-1, -1, "*")
     min_mrv_cell.num_mrv = [x for x in range(n+1)]
+    # loop through each cell
     for i in range(n):
         for j in range(n):
+            # if cell not filled and num_mrv less than current min_mrv_cell num_mrv then set new min_mrv_cell
             if cur_map[i][j].isComplete == False and len(cur_map[i][j].num_mrv) <= len(min_mrv_cell.num_mrv):
                 min_mrv_cell = cur_map[i][j]
 
@@ -119,7 +123,7 @@ def choose_cell():
 def forward_checking(cell):
     x = set_cell_num_domain(cell)
     if x == False:
-        return "failuer"
+        return "failure"
 
 if __name__ == "__main__":
 
@@ -161,8 +165,10 @@ if __name__ == "__main__":
     [1, "*", 6, "*", 5, "*", "*", 7, "*"]
 ]
 
+# put map1 in cur_map
 get_input(map1)
 
+# set starting cell domain values
 set_map_domain()
 
 print("map for first time: \n")
@@ -172,26 +178,34 @@ print("*********")
 
 stack.append(cur_map)
 while len(stack) > 0:
+    # get cell with mrv
     chosen_cell = choose_cell()
     # print("chosen is",chosen_cell.x,chosen_cell.y)
+    # if cell didn't get chosen, end
     if (chosen_cell.x == -1 or chosen_cell.y == -1):
         print("result: ")
         for i in range(n):
             print(cur_map[i])
         exit()
 
+    # if chosen cell has no possible values, failure
     if len(chosen_cell.num_mrv) == 0:
-        t = "failuer"
+        t = "failure"
 
     else:
+        # pop chosen cell possible value
         x = chosen_cell.num_mrv.pop(0)
+        # copy cur_map
         bp_map = copy.deepcopy(cur_map)
+        # push new map onto stack
         stack.append(bp_map)
+        # fill chosen cell
         chosen_cell.number = x
         chosen_cell.isComplete = True
+        # forward check on chosen cell
         t = forward_checking(chosen_cell)
 
-    if t != "failuer":
+    if t != "failure":
         pass
 
     else:
@@ -199,3 +213,5 @@ while len(stack) > 0:
         cur_map = stack.pop()
 
 print("no solution")
+
+# implement tiebreaking based on left to right and top to bottm and increasing order of values
