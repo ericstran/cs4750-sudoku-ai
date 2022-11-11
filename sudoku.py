@@ -4,6 +4,7 @@ cur_map = []
 stack = []
 # n(umber) of rows/columns
 n = 9
+assignments = 0
 
 
 class Cell:
@@ -64,7 +65,7 @@ def set_cell_num_domain(cell):
                 if len(cur_map[x][j].num_mrv) == 0 and cur_map[x][j].isComplete != True: return False
             except: pass
         # check 3x3
-        # get which square in Sudoku puzzle
+        # get which square in map
         squareX = -1
         squareY = -1
         if((x == 0) or (x == 1) or (x == 2)): squareX = 0
@@ -89,7 +90,7 @@ def set_cell_num_domain(cell):
     return True
 
 
-# wrapper function for set_cell_num_domain()
+# wrapper function for set_cell_num_domain() - all cells
 def set_map_domain():
     # for each cell, call set_cell_num_domain() 
     for row in range(n):
@@ -105,6 +106,16 @@ def print_mrv():
             print(cur_map[i][j].num_mrv, end=",,,")
         print()
 
+
+def print_map(map, x, y):
+    for i in range(n):
+        for j in range(n):
+            if (x == None and y == None) or (i != x or j != y): print(map[i][j], end=", ")
+            else: print('(' + str(map[i][j]) + ')', end=", ")
+        print()
+    print("*********")
+
+
 # choose cell with mrv
 def choose_cell():
     # create fake cell for comparison
@@ -119,99 +130,104 @@ def choose_cell():
 
     return min_mrv_cell
 
-
+# wrapper function for set_cell_num_domain() - one cell
 def forward_checking(cell):
     x = set_cell_num_domain(cell)
     if x == False:
         return "failure"
 
 if __name__ == "__main__":
+    start_time = time.time()
+    # 2D array representation of Sudoku puzzle (map)
+    # "*" represents open space
+    map1 = [
+        ["*", "*", 1, "*", "*", 2, "*", "*", "*"],
+        ["*", "*", 5, "*", "*", 6, "*", 3, "*"],
+        [4, 6, "*", "*", "*", 5, "*", "*", "*"],
+        ["*", "*", "*", 1, "*", 4, "*", "*", "*"],
+        [6, "*", "*", 8, "*", "*", 1, 4, 3],
+        ["*", "*", "*", "*", 9, "*", 5, "*", 8],
+        [8, "*", "*", "*", 4, 9, "*", 5, "*"],
+        [1, "*", "*", 3, 2, "*", "*", "*", "*"],
+        ["*", "*", 9, "*", "*", "*", 3, "*", "*"]
+    ]
 
-  # 2D array representation of Sudoku puzzle
-  # "*" represents open space
-  map1 = [
-    ["*", "*", 1, "*", "*", 2, "*", "*", "*"],
-    ["*", "*", 5, "*", "*", 6, "*", 3, "*"],
-    [4, 6, "*", "*", "*", 5, "*", "*", "*"],
-    ["*", "*", "*", 1, "*", 4, "*", "*", "*"],
-    [6, "*", "*", 8, "*", "*", 1, 4, 3],
-    ["*", "*", "*", "*", 9, "*", 5, "*", 8],
-    [8, "*", "*", "*", 4, 9, "*", 5, "*"],
-    [1, "*", "*", 3, 2, "*", "*", "*", "*"],
-    ["*", "*", 9, "*", "*", "*", 3, "*", "*"]
-]
+    map2 = [
+        ["*", "*", 5, "*", 1, "*", "*", "*", "*"],
+        ["*", "*", 2, "*", "*", 4, "*", 3, "*"],
+        [1, "*", 9, "*", "*", "*", 2, "*", 6],
+        [2, "*", "*", "*", 3, "*", "*", "*", "*"],
+        ["*", 4, "*", "*", "*", "*", 7, "*", "*"],
+        [5, "*", "*", "*", "*", 7, "*", "*", 1],
+        ["*", "*", "*", 6, "*", 3, "*", "*", "*"],
+        ["*", 6, "*", 1, "*", "*", "*", "*", "*"],
+        ["*", "*", "*", "*", 7, "*", "*", 5, "*"]
+    ]
 
-  map2 = [
-    ["*", "*", 5, "*", 1, "*", "*", "*", "*"],
-    ["*", "*", 2, "*", "*", 4, "*", 3, "*"],
-    [1, "*", 9, "*", "*", "*", 2, "*", 6],
-    [2, "*", "*", "*", 3, "*", "*", "*", "*"],
-    ["*", 4, "*", "*", "*", "*", 7, "*", "*"],
-    [5, "*", "*", "*", "*", 7, "*", "*", 1],
-    ["*", "*", "*", 6, "*", 3, "*", "*", "*"],
-    ["*", 6, "*", 1, "*", "*", "*", "*", "*"],
-    ["*", "*", "*", "*", 7, "*", "*", 5, "*"]
-]
+    map3 = [
+        [6, 7, "*", "*", "*", "*", "*", "*", "*"],
+        ["*", 2, 5, "*", "*", "*", "*", "*", "*"],
+        ["*", 9, "*", 5, 6, "*", 2, "*", "*"],
+        [3, "*", "*", "*", 8, "*", 9, "*", "*"],
+        ["*", "*", "*", "*", "*", "*", 8, "*", 1],
+        ["*", "*", "*", 4, 7, "*", "*", "*", "*"],
+        ["*", "*", 8, 6, "*", "*", "*", 9, "*"],
+        ["*", "*", "*", "*", "*", "*", "*", 1, "*"],
+        [1, "*", 6, "*", 5, "*", "*", 7, "*"]
+    ]
 
-  map3 = [
-    [6, 7, "*", "*", "*", "*", "*", "*", "*"],
-    ["*", 2, 5, "*", "*", "*", "*", "*", "*"],
-    ["*", 9, "*", 5, 6, "*", 2, "*", "*"],
-    [3, "*", "*", "*", 8, "*", 9, "*", "*"],
-    ["*", "*", "*", "*", "*", "*", 8, "*", 1],
-    ["*", "*", "*", 4, 7, "*", "*", "*", "*"],
-    ["*", "*", 8, 6, "*", "*", "*", 9, "*"],
-    ["*", "*", "*", "*", "*", "*", "*", 1, "*"],
-    [1, "*", 6, "*", 5, "*", "*", 7, "*"]
-]
+    # put map1 in cur_map
+    get_input(map1)
 
-# put map1 in cur_map
-get_input(map1)
+    # set starting cell domain values
+    set_map_domain()
 
-# set starting cell domain values
-set_map_domain()
+    print("map for first time: \n")
+    print_map(cur_map, None, None)
 
-print("map for first time: \n")
-for i in range(n):
-    print(cur_map[i])
-print("*********")
+    stack.append(cur_map)
+    while len(stack) > 0:
+        # get cell with mrv
+        chosen_cell = choose_cell()
+        # print("chosen is",chosen_cell.x,chosen_cell.y)
+        # if cell couldn't be chosen, end
+        if (chosen_cell.x == -1 or chosen_cell.y == -1):
+            print("result: ")
+            print_map(cur_map, None, None)
+            print("--- %s seconds ---" % (time.time() - start_time))
+            exit()
 
-stack.append(cur_map)
-while len(stack) > 0:
-    # get cell with mrv
-    chosen_cell = choose_cell()
-    # print("chosen is",chosen_cell.x,chosen_cell.y)
-    # if cell didn't get chosen, end
-    if (chosen_cell.x == -1 or chosen_cell.y == -1):
-        print("result: ")
-        for i in range(n):
-            print(cur_map[i])
-        exit()
+        # if chosen cell has no possible values, failure
+        if len(chosen_cell.num_mrv) == 0:
+            t = "failure"
 
-    # if chosen cell has no possible values, failure
-    if len(chosen_cell.num_mrv) == 0:
-        t = "failure"
+        else:
+            # pop chosen cell possible value
+            x = chosen_cell.num_mrv.pop(0)
+            # copy cur_map
+            bp_map = copy.deepcopy(cur_map)
+            # push new map onto stack
+            stack.append(bp_map)
+            # fill chosen cell
+            chosen_cell.number = x
+            chosen_cell.isComplete = True
+            # print first 4 assignments
+            if assignments < 4:
+                assignments += 1
+                print(("assignment " + str(assignments)).center(40, "*")) 
+                print_map(cur_map, chosen_cell.x, chosen_cell.y)
 
-    else:
-        # pop chosen cell possible value
-        x = chosen_cell.num_mrv.pop(0)
-        # copy cur_map
-        bp_map = copy.deepcopy(cur_map)
-        # push new map onto stack
-        stack.append(bp_map)
-        # fill chosen cell
-        chosen_cell.number = x
-        chosen_cell.isComplete = True
-        # forward check on chosen cell
-        t = forward_checking(chosen_cell)
+            # forward check on chosen cell
+            t = forward_checking(chosen_cell)
 
-    if t != "failure":
-        pass
+        if t != "failure": # keep going
+            pass
 
-    else:
-        print("back Track".center(40, "*"))
-        cur_map = stack.pop()
+        else:
+            print("back Track".center(40, "*")) 
+            # revert to previous map
+            cur_map = stack.pop()
 
-print("no solution")
+    print("no solution")
 
-# implement tiebreaking based on left to right and top to bottm and increasing order of values
+    # implement tiebreaking based on left to right and top to bottm and increasing order of values
