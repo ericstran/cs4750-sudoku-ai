@@ -230,4 +230,4 @@ if __name__ == "__main__":
 
     print("no solution")
 
-    # implement tiebreaking based on left to right and top to bottm and increasing order of values
+    # implement tiebreaking based on left to right and top to bottom and increasing order of values
