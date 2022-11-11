@@ -44,7 +44,7 @@ def set_cell_num_domain(cell):
     y = cell.y # col
     # proceed if cell is filled
     if cell.number != '*':
-        # check for rows and cols same or not
+        # check rows and cols
         for i in range(n):
             if i == x:  # or  cur_map[i][y].isComplete == True :
                 continue 
@@ -63,7 +63,7 @@ def set_cell_num_domain(cell):
                 # if no possible values remaining and not filled return False
                 if len(cur_map[x][j].num_mrv) == 0 and cur_map[x][j].isComplete != True: return False
             except: pass
-        # check for 3x3
+        # check 3x3
         # get which square in Sudoku puzzle
         squareX = -1
         squareY = -1
@@ -75,12 +75,14 @@ def set_cell_num_domain(cell):
         elif((y == 6) or (y == 7) or (y == 8)): squareY = 2
         posInSquareX = x % 3
         posInSquareY = y % 3
-        # loop through each square
+        # loop through 3x3 where cell is located
         for currX in range(3):
             for currY in range(3):
                 if((currX == posInSquareX) and (currY == posInSquareY)): continue
                 try:
+                    # for all in same 3x3, remove cell's number (forward checking)
                     cur_map[currX + (squareX * 3)][currY + (squareY * 3)].num_mrv.remove(cell.number)
+                    # if no possible values remaining and not filled return False
                     if len(cur_map[currX + (squareX * 3)][currY + (squareY * 3)].num_mrv) == 0 and cur_map[currX + (squareX * 3)][currY + (squareY * 3)].isComplete != True:
                         return False
                 except: pass
