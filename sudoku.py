@@ -1,90 +1,98 @@
-import copy
+import copy, time
 
 cur_map = []
 stack = []
+# n(umber) of rows/columns
 n = 9
- 
+
 
 class Cell:
     def __init__(self, x, y, number):
+        # coordinate
         self.x = x
         self.y = y
 
+        # check if "filled"
         self.isComplete = False
         if number != '*':
             self.isComplete = True
             number = int(number)
+        # set cell value
         self.number = number
+        # Sudoku numbers for minimum remaining possible values
         self.num_mrv = [x for x in range(1, n+1)]
 
-    def __repr__(self):
-        return "{}".format(self.number)
+    def __repr__(self): return "{}".format(self.number)
 
 
+# initialize cur_map cells
 def get_input(inputMap):
     print("here")
-    for i in range(n):
-        cur_map.append([])
+    # make rows
+    for _ in range(n): cur_map.append([])
+    # make cols/initialize cell values
     for row in range(n):
         for col in range(n):
             cur_map[row].append(Cell(row, col, inputMap[row][col]))
 
 
+# set other cell domains for a given cell
+# returns True if no conflict, False if conflict
 def set_cell_num_domain(cell):
-    x = cell.x
-    y = cell.y
+    # get coordinate
+    x = cell.x # row
+    y = cell.y # col
+    # proceed if cell is filled
     if cell.number != '*':
+        # check for rows and cols same or not
         for i in range(n):
             if i == x:  # or  cur_map[i][y].isComplete == True :
-                continue
-            try:
+                continue 
+            try: 
+                # for all in same col, different row, remove cell's number (forward checking)
                 cur_map[i][y].num_mrv.remove(cell.number)
-                if len(cur_map[i][y].num_mrv) == 0 and cur_map[i][y].isComplete != True:
-                    return False
-            except:
-                pass
+                # if no possible values remaining and not filled return False
+                if len(cur_map[i][y].num_mrv) == 0 and cur_map[i][y].isComplete != True: return False
+            except: pass
         for j in range(n):
             if j == y:  # or cur_map[x][j].isComplete == True:
-                continue
+                continue 
             try:
+                # for all in same row, different col, remove cell's number (forward checking)
                 cur_map[x][j].num_mrv.remove(cell.number)
-                if len(cur_map[x][j].num_mrv) == 0 and cur_map[x][j].isComplete != True:
-                    return False
-            except:
-                pass
-        recX = -1
-        recY = -1
-        if((x == 0) or (x == 1) or (x == 2)):
-            recX = 0
-        elif((x == 3) or (x == 4) or (x == 5)):
-            recX = 1
-        elif((x == 6) or (x == 7) or (x == 8)):
-            recX = 2
-        if((y == 0) or (y == 1) or (y == 2)):
-            recY = 0
-        elif((y == 3) or (y == 4) or (y == 5)):
-            recY = 1
-        elif((y == 6) or (y == 7) or (y == 8)):
-            recY = 2
+                # if no possible values remaining and not filled return False
+                if len(cur_map[x][j].num_mrv) == 0 and cur_map[x][j].isComplete != True: return False
+            except: pass
+        # check for 3x3
+        # get which square in Sudoku puzzle
+        squareX = -1
+        squareY = -1
+        if((x == 0) or (x == 1) or (x == 2)): squareX = 0
+        elif((x == 3) or (x == 4) or (x == 5)): squareX = 1
+        elif((x == 6) or (x == 7) or (x == 8)): squareX = 2
+        if((y == 0) or (y == 1) or (y == 2)): squareY = 0
+        elif((y == 3) or (y == 4) or (y == 5)): squareY = 1
+        elif((y == 6) or (y == 7) or (y == 8)): squareY = 2
         posInSquareX = x % 3
         posInSquareY = y % 3
+        # loop through each square
         for currX in range(3):
             for currY in range(3):
-                if((currX == posInSquareX) and (currY == posInSquareY)):
-                    continue
+                if((currX == posInSquareX) and (currY == posInSquareY)): continue
                 try:
-                    cur_map[currX + (recX * 3)][currY + (recY * 3)].num_mrv.remove(cell.number)
-                    if len(cur_map[currX + (recX * 3)][currY + (recY * 3)].num_mrv) == 0 and cur_map[currX + (recX * 3)][currY + (recY * 3)].isComplete != True:
+                    cur_map[currX + (squareX * 3)][currY + (squareY * 3)].num_mrv.remove(cell.number)
+                    if len(cur_map[currX + (squareX * 3)][currY + (squareY * 3)].num_mrv) == 0 and cur_map[currX + (squareX * 3)][currY + (squareY * 3)].isComplete != True:
                         return False
-                except:
-                    pass
+                except: pass
     return True
 
 
+# wrapper function for set_cell_num_domain()
 def set_map_domain():
-    for i in range(n):
-        for j in range(n):
-            x = set_cell_num_domain(cur_map[i][j])
+    # for each cell, call set_cell_num_domain() 
+    for row in range(n):
+        for col in range(n):
+            x = set_cell_num_domain(cur_map[row][col])
     return x
 
 
@@ -111,8 +119,11 @@ def forward_checking(cell):
     if x == False:
         return "failuer"
 
+if __name__ == "__main__":
 
-map1 = [
+  # 2D array representation of Sudoku puzzle
+  # "*" represents open space
+  map1 = [
     ["*", "*", 1, "*", "*", 2, "*", "*", "*"],
     ["*", "*", 5, "*", "*", 6, "*", 3, "*"],
     [4, 6, "*", "*", "*", 5, "*", "*", "*"],
@@ -122,6 +133,30 @@ map1 = [
     [8, "*", "*", "*", 4, 9, "*", 5, "*"],
     [1, "*", "*", 3, 2, "*", "*", "*", "*"],
     ["*", "*", 9, "*", "*", "*", 3, "*", "*"]
+]
+
+  map2 = [
+    ["*", "*", 5, "*", 1, "*", "*", "*", "*"],
+    ["*", "*", 2, "*", "*", 4, "*", 3, "*"],
+    [1, "*", 9, "*", "*", "*", 2, "*", 6],
+    [2, "*", "*", "*", 3, "*", "*", "*", "*"],
+    ["*", 4, "*", "*", "*", "*", 7, "*", "*"],
+    [5, "*", "*", "*", "*", 7, "*", "*", 1],
+    ["*", "*", "*", 6, "*", 3, "*", "*", "*"],
+    ["*", 6, "*", 1, "*", "*", "*", "*", "*"],
+    ["*", "*", "*", "*", 7, "*", "*", 5, "*"]
+]
+
+  map3 = [
+    [6, 7, "*", "*", "*", "*", "*", "*", "*"],
+    ["*", 2, 5, "*", "*", "*", "*", "*", "*"],
+    ["*", 9, "*", 5, 6, "*", 2, "*", "*"],
+    [3, "*", "*", "*", 8, "*", 9, "*", "*"],
+    ["*", "*", "*", "*", "*", "*", 8, "*", 1],
+    ["*", "*", "*", 4, 7, "*", "*", "*", "*"],
+    ["*", "*", 8, 6, "*", "*", "*", 9, "*"],
+    ["*", "*", "*", "*", "*", "*", "*", 1, "*"],
+    [1, "*", 6, "*", 5, "*", "*", 7, "*"]
 ]
 
 get_input(map1)
