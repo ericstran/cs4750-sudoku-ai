@@ -149,7 +149,7 @@ def print_map(map, x, y):
     print("*********")
 
 
-# choose cell with mrv
+# choose cell with mrv, if tiebreak then greatest degree, then lowest col, then lowest row
 def choose_cell():
     # create fake cell for comparison in list for cells that have same mrv
     min_mrv_cells = [Cell(-1, -1, "*", 20)]
