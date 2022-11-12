@@ -58,7 +58,6 @@ def get_degree(cell):
 
 # initialize cur_map cells
 def get_input(inputMap):
-    print("here")
     # make rows
     for _ in range(n): cur_map.append([])
     # make cols/initialize cells
