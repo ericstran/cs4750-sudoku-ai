@@ -70,6 +70,7 @@ def get_input(inputMap):
 # set other cell domains for a given cell
 # returns True if no conflict, False if conflict
 def set_cell_num_domain(cell):
+    cell.degree = get_degree(cell)
     # get coordinate
     x = cell.x # row
     y = cell.y # col
@@ -80,9 +81,9 @@ def set_cell_num_domain(cell):
             if i == x:  # or  cur_map[i][y].isComplete == True :
                 continue 
             try: 
-                # for all in same col, different row, remove cell's number (forward checking) and decrease degree
+                # for all in same col, different row, remove cell's number (forward checking)
                 cur_map[i][y].num_mrv.remove(cell.number)
-                cur_map[i][y].degree -= 1
+                # cur_map[i][y].degree -= 1
                 # if no possible values remaining and not filled return False
                 if len(cur_map[i][y].num_mrv) == 0 and cur_map[i][y].isComplete != True: return False
             except: pass
@@ -90,9 +91,9 @@ def set_cell_num_domain(cell):
             if j == y:  # or cur_map[x][j].isComplete == True:
                 continue 
             try:
-                # for all in same row, different col, remove cell's number (forward checking) and decrease degree
+                # for all in same row, different col, remove cell's number (forward checking)
                 cur_map[x][j].num_mrv.remove(cell.number)
-                cur_map[x][j].degree -= 1
+                # cur_map[x][j].degree -= 1
                 # if no possible values remaining and not filled return False
                 if len(cur_map[x][j].num_mrv) == 0 and cur_map[x][j].isComplete != True: return False
             except: pass
@@ -113,9 +114,9 @@ def set_cell_num_domain(cell):
             for currY in range(3):
                 if((currX == posInSquareX) and (currY == posInSquareY)): continue
                 try:
-                    # for all in same 3x3, remove cell's number (forward checking) and decrease degree
+                    # for all in same 3x3, remove cell's number (forward checking)
                     cur_map[currX + (squareX * 3)][currY + (squareY * 3)].num_mrv.remove(cell.number)
-                    if (currX + (squareX * 3)) != x and (currY + (squareY * 3)) != y: cur_map[currX + (squareX * 3)][currY + (squareY * 3)].degree -= 1
+                    # if (currX + (squareX * 3)) != x and (currY + (squareY * 3)) != y: cur_map[currX + (squareX * 3)][currY + (squareY * 3)].degree -= 1
                     # if no possible values remaining and not filled return False
                     if len(cur_map[currX + (squareX * 3)][currY + (squareY * 3)].num_mrv) == 0 and cur_map[currX + (squareX * 3)][currY + (squareY * 3)].isComplete != True:
                         return False
