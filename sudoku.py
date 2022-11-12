@@ -1,4 +1,4 @@
-import copy, time
+import copy, time, math
 
 cur_map = []
 stack = []
@@ -8,10 +8,12 @@ assignments = 0
 
 
 class Cell:
-    def __init__(self, x, y, number):
+    def __init__(self, x, y, number, degree):
         # coordinate
         self.x = x
         self.y = y
+        
+        self.degree = degree
 
         # check if filled
         self.isComplete = False
@@ -24,6 +26,29 @@ class Cell:
         self.num_mrv = [x for x in range(1, n+1)]
 
     def __repr__(self): return "{}".format(self.number)
+
+
+def get_degree(cell):
+    degree = 20
+    # check all rows in same col as cell
+    for row in range(n):
+        if row == cell.x: continue
+        if cur_map[row][cell.y].isComplete == True: degree -= 1
+    
+    # check all cols in same row as cell
+    for col in range(n):
+        if col == cell.y: continue
+        if cur_map[cell.x][col].isComplete == True: degree -= 1
+
+    # check square where cell is
+    squareX = math.floor(cell.x/3)
+    squareY = math.floor(cell.y/3)
+    posInSquareX = cell.x % 3
+    posInSquareY = cell.y % 3
+    for currX in range(3):
+        for currY in range(3):
+            if((currX == posInSquareX) or (currY == posInSquareY)): continue
+            if cur_map[currX * squareX][col].isComplete == True
 
 
 # initialize cur_map cells
@@ -118,17 +143,20 @@ def print_map(map, x, y):
 
 # choose cell with mrv
 def choose_cell():
-    # create fake cell for comparison
-    min_mrv_cell = Cell(-1, -1, "*")
+    # create fake cell for comparison in list for cells that have same mrv
+    min_mrv_cell = [Cell(-1, -1, "*")]
     min_mrv_cell.num_mrv = [x for x in range(n+1)]
     # loop through each cell
     for i in range(n):
         for j in range(n):
             # if cell not filled and num_mrv less than current min_mrv_cell num_mrv then set new min_mrv_cell
-            if cur_map[i][j].isComplete == False and len(cur_map[i][j].num_mrv) <= len(min_mrv_cell.num_mrv):
-                min_mrv_cell = cur_map[i][j]
+            if cur_map[i][j].isComplete == False:
+                if len(cur_map[i][j].num_mrv) < len(min_mrv_cell[0].num_mrv): min_mrv_cell = cur_map[i][j]
+                elif len(cur_map[i][j].num_mrv) == len(min_mrv_cell[0].num_mrv): min_mrv_cell.append(cur_map[i][j])
 
-    return min_mrv_cell
+    if len(min_mrv_cell) == 0: return min_mrv_cell[0]
+    # choose based on degree, if degree is same, choose based on less x...
+
 
 # wrapper function for set_cell_num_domain() - one cell
 def forward_checking(cell):
@@ -230,4 +258,6 @@ if __name__ == "__main__":
 
     print("no solution")
 
-    # implement tiebreaking based on left to right and top to bottom and increasing order of values
+    # domain size of selected var
+    # degree of var
+    # implement tiebreaking based on degree? and left to right and top to bottom and increasing order of values
