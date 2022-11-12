@@ -162,21 +162,21 @@ def choose_cell():
                 if len(cur_map[i][j].num_mrv) < len(min_mrv_cells[0].num_mrv): min_mrv_cells = [cur_map[i][j]]
                 elif len(cur_map[i][j].num_mrv) == len(min_mrv_cells[0].num_mrv): min_mrv_cells.append(cur_map[i][j])
 
-    if len(min_mrv_cells) == 0: return min_mrv_cells[0]
+    if len(min_mrv_cells) == 1: return min_mrv_cells[0]
     greatest_degree_cells = [Cell(-1, -1, "*", sys.maxsize)]
     # loop through cells with equal mrv to find greatest degree
     for cell in min_mrv_cells:
         if cell.degree < greatest_degree_cells[0].degree: greatest_degree_cells = [cell] 
         elif cell.degree == greatest_degree_cells[0].degree: greatest_degree_cells.append(cell)
     
-    if len(greatest_degree_cells) == 0: return greatest_degree_cells[0]
+    if len(greatest_degree_cells) == 1: return greatest_degree_cells[0]
     least_col_cells = [Cell(-1, sys.maxsize, "*", sys.maxsize)]
     # loop through cells to find least col
     for cell in greatest_degree_cells:
         if cell.y < least_col_cells[0].y: least_col_cells = [cell] 
         elif cell.y == least_col_cells[0].y: least_col_cells.append(cell)
     
-    if len(least_col_cells) == 0: return least_col_cells[0]
+    if len(least_col_cells) == 1: return least_col_cells[0]
     least_row_cells = [Cell(sys.maxsize, -1, "*", sys.maxsize)]
     # loop through cells to find least row
     for cell in least_col_cells:
