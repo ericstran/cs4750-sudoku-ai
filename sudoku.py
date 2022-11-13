@@ -286,7 +286,7 @@ if __name__ == "__main__":
             if assignments < 4:
                 assignments += 1
                 print(("assignment " + str(assignments)).center(40, "*")) 
-                print("domain size of selected var:", len(chosen_cell.num_mrv))
+                print("domain size of selected var:", len(chosen_cell.num_mrv) + 1)
                 print("degree of selected var:", chosen_cell.degree)
                 print_map(cur_map, chosen_cell.x, chosen_cell.y)
 
