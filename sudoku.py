@@ -32,15 +32,25 @@ class Cell:
 # get degree for a cell
 def get_degree(cell):
     degree = 20
+    firstPair = (cell.x, cell.y)
+    foundPairs = set()
+    foundPairs.add(firstPair)
     # check all rows in same col as cell
     for row in range(n):
         if row == cell.x: continue
-        if cur_map[row][cell.y].isComplete == True: degree -= 1
+        if cur_map[row][cell.y].isComplete == True: 
+            degree -= 1
+            currentCellTuple = (cell.x, cell.y)
+            foundPairs.add(currentCellTuple)
+
     
     # check all cols in same row as cell
     for col in range(n):
         if col == cell.y: continue
-        if cur_map[cell.x][col].isComplete == True: degree -= 1
+        if cur_map[cell.x][col].isComplete == True: 
+            degree -= 1
+            currentCellTuple = (cell.x, cell.y)
+            foundPairs.add(currentCellTuple)
 
     # check square where cell is
     squareX = math.floor(cell.x/3)
@@ -52,7 +62,11 @@ def get_degree(cell):
             if currX == posInSquareX or currY == posInSquareY: continue
             if (currX + (squareX * 3)) == cell.x: continue 
             if (currY + (squareY * 3)) == cell.y: continue
-            if cur_map[currX + (squareX * 3)][currY + (squareY * 3)].isComplete == True: degree -= 1
+            if cur_map[currX + (squareX * 3)][currY + (squareY * 3)].isComplete == True:
+                currentCellTuple = (currX + (squareX * 3), currY + (squareY * 3))
+                if(currentCellTuple not in foundPairs):
+                    foundPairs.add(currentCellTuple) 
+                    degree -= 1
     return degree
 
 
@@ -267,6 +281,7 @@ if __name__ == "__main__":
             # fill chosen cell
             chosen_cell.number = x
             chosen_cell.isComplete = True
+            set_map_domain()
             # print first 4 assignments
             if assignments < 4:
                 assignments += 1
